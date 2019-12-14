@@ -1,6 +1,25 @@
 import random
+import argparse
 from graph import *
 
+
+
+# argument parser
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--numberOfSubComplexes', help="number Of Sub-Complexes -t in [1...*]",type=int, default=20)
+parser.add_argument('-p', '--subComplexesItemsNumber', help="number Of Sub-Complexes items", type=int, default=10)
+parser.add_argument('-k', '--maxNumberOfEdges', help="maxNumberOfEdges -k [1...*]", type=int, default=2)
+parser.add_argument('-d', '--delta', help="Max degree of the resulting graph", type=int, default=10)
+parser.add_argument('-a', '--algo', help="The algo use for simulation 0-first Algo, 1-second algo", type=int, choices=[0, 1], default=0)
+args = parser.parse_args()
+
+def printOptions():
+	print("numberOfSubComplexes : ", args.numberOfSubComplexes)
+	print("subComplexesItemsNumber : ", args.subComplexesItemsNumber)
+	print("maxNumberOfEdges : ", args.maxNumberOfEdges)
+	print("delta : ", args.delta)
+	print("algo : ", args.algo)
+	print()
 
 #create graphe from edge list, this edges are just tuple(char,char)
 #it means Vertex will be created, they don't exist
@@ -101,9 +120,9 @@ def Prim(G):
 	return mst
 
 '''
-	Computing method
+	Computing method "Algo One"
 '''
-def compute(subComplexes, k, delta, t):
+def computeAlgoOne(subComplexes, k, delta, t):
 	win = 0
 	fail = 0
 	
@@ -130,18 +149,41 @@ def compute(subComplexes, k, delta, t):
 
 	return win / t
 
+def computeAlgoTwo(subComplexes, k, delta, t):
+	win = 0
+	fail = 0
+
+
+
+	return win / t
+
 #Main
 
 if __name__ == '__main__':
+	#args
+	t=args.numberOfSubComplexes
+	p=args.subComplexesItemsNumber
+	k=args.maxNumberOfEdges
+	d=args.delta
+	a=args.algo
+	printOptions()
+
+	#program beginning
+
 	vertices={}
 	#create 100 vertices
 	for i in range(1,101):
 		vertices['V'+str(i)] = Graph.Vertex('V'+str(i))
 
-	#generate subComplexes t,n
-	subComplexes = subComplexesGenerator(vertices,3,5) 
+	#generate subComplexes t,p
+	subComplexes = subComplexesGenerator(vertices,t,p) 
 
 	#compute subComplexes, k, delta, t, a
-	res = compute(subComplexes,100,3,3)
+	if(a==0):
+		res = computeAlgoOne(subComplexes,k,d,t)
+		print(res)
+	elif(a==1):
+		print("second algo is not ready yet")
+	
 
-	print(res)
+	
