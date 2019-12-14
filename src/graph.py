@@ -1,3 +1,5 @@
+#Smith Djamoura - 14-12-2019
+
 import random
 
 class Graph:
@@ -12,12 +14,15 @@ class Graph:
         """
         __slots__ = '_tag' , '_degree'
 
-        def __init__(self, t):
+        def __init__(self, t, deg=None):
             self._tag = t
             self._degree = 0
 
         def tag(self):
             return self._tag
+
+        def __hash__(self):
+            return hash(id(self)) 
 
         def degree(self):
             return self._degree
@@ -33,6 +38,10 @@ class Graph:
 
         def __repr__(self):
             return str(self._tag)
+        #redefine equal
+
+        def __eq__(self, other):
+            return True if self.tag == other.tag else False
 
     #------------------------- Edge class -------------------------
     class Edge:
@@ -57,6 +66,9 @@ class Graph:
                 raise TypeError('v must be a Vertex')
             return self._secondVertex if v is self._firstVertex else self._firstVertex
 
+        def __hash__(self):
+            return hash( (self._firstVertex,self._secondVertex) )
+
 
         def __repr__(self):
             return '({0},{1})'.format(self._firstVertex,self._secondVertex)
@@ -77,10 +89,17 @@ class Graph:
         """
         Verify that v is a Vertex of this graph
         """
+        bref = 0
         if not isinstance(v, self.Vertex):
             raise TypeError('Vertex expected')
-        if v not in self._vertices:
+        for w in self._vertices.keys():
+            if v.tag()==w.tag() :
+                bref = bref + 1
+                break
+        if(bref==0):
             raise ValueError('Vertex does not belong to this graph.')
+
+        
 
     def get_vertex(self,tag):
         """
@@ -139,8 +158,7 @@ class Graph:
 
     def degree(self, v):   
         """
-        Return number of (outgoing) edges incident to vertex v in the graph.
-        If graph is directed, optional parameter used to count incoming edges
+        Return number of edges incident to vertex v in the graph.
         """
         self._validate_vertex(v)
         adj = self._vertices
@@ -168,6 +186,9 @@ class Graph:
         v = self.Vertex(t)
         self._vertices[v] = {}
         return v
+    def add_vertex(self,v):
+        self._vertices[v] = {}
+
 
     def insert_edge(self, u, v):
         """
@@ -181,12 +202,12 @@ class Graph:
         self._vertices[u][v] = e
 
         #inc these vertices degree
-        int break_cond = 0
-        for w in self._vertices.keys()
+        break_cond = 0
+        for w in self._vertices.keys():
             if ( (w==u) or (w==v) ):
                 w.incDegree()
-                break_cond++
-            if break_cond = 2 :
+                break_cond=break_cond+1
+            if break_cond == 2 :
                 break
 
 
@@ -200,31 +221,17 @@ class Graph:
                 result += self._print_edge(self._vertices[u][v]) + "\n"
         return result
 
+    def print_graph(self):
+        printed = set()
+        result = ""
+        for u in self._vertices:
+            for v in self._vertices[u]:
+                if( (self.get_edge(u,v) not in printed) and (self.get_edge(v,u) not in printed) ):
+                    result += self._print_edge(self._vertices[u][v]) + "\n"
+                    printed.add(self.get_edge(u,v))
+                    printed.add(self.get_edge(v,u))
+        return result
+        
 
-def graph_from_edgelist(E):
-    """
-    Make a graph instance based on a sequence of edge tuples.
-    Edges are in form (origin,destination) .
-    Vertex set is presume to be those
-    incident to at least one edge. Vertex labels are assumed to be hashable
-    """
-    g = Graph()
-    V = set()
-    
-    #adding the vertices to V
-    for e in E:
-        V.add(e[0])
-        V.add(e[1])
 
-    #Inserting vertices to the graph
-    verts = {}
-    for v in V:
-        verts[v] = g.insert_vertex(v)
 
-    #inserting Edges to the graph
-    for e in E:
-        src = e[0]
-        dest = e[1]
-        g.insert_edge(verts[src],verts[dest])
-
-    return g
