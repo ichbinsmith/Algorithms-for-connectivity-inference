@@ -78,16 +78,57 @@ def subComplexesGenerator(vertices, t, p):
 	return subComplexes
 
 def Prim(G):
-	result = Graph()
+	result = {}
 
-	return result
+	mst = []
+	bh = set()
+	u = G.random_vertex()
+	marked = { u }
+	for e in G.incident_edges(u):
+		bh.add(e)
+	while len(marked) < G.vertex_count():
+		e = bh.pop()
+		a, b = e.endpoints()
+		if a in marked and b in marked:
+			continue
+		mst.append(e)
+		x = a if b in marked else b
+		marked.add(x)
+		for e in G.incident_edges(x):
+			if e.opposite(x) not in marked:
+				bh.add(e)
+
+	return mst
 
 '''
 	Computing method
 '''
-def compute(subComplexes, k, delta):
+def compute(subComplexes, k, delta, t):
+	win = 0
+	fail = 0
+	
+	for sc in subComplexes.values():
+		edgesInG = []
+		g = {}
+		res = Prim(sc)
+		for e in res :
+			if(e not in edgesInG):
+				edgesInG.append(e)
+		
+		edgesList=[]
+		for e in edgesInG:
+			edgesList.append(e.endpointsTag())
+		g=graph_from_edgelist(edgesList)
+		#edges count < k
+		a= True if (g.edge_count()<k) else False
+		#max degree < delta
+		b= True if (g.max_degree()<delta) else False
+		if (a==True and b==True):
+			win = win +1
+		else:
+			fail = fail +1
 
-	return False
+	return win / t
 
 #Main
 
@@ -97,9 +138,10 @@ if __name__ == '__main__':
 	for i in range(1,101):
 		vertices['V'+str(i)] = Graph.Vertex('V'+str(i))
 
-	#generate subComplexes
-	subComplexes = subComplexesGenerator(vertices,3,5)
+	#generate subComplexes t,n
+	subComplexes = subComplexesGenerator(vertices,3,5) 
 
+	#compute subComplexes, k, delta, t, a
+	res = compute(subComplexes,100,3,3)
 
-	for sc in subComplexes.values() :
-		print(sc.print_graph())
+	print(res)

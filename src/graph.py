@@ -58,6 +58,10 @@ class Graph:
         def endpoints(self):
             return (self._firstVertex, self._secondVertex)
 
+        def endpointsTag(self):
+            return (self._firstVertex.tag(), self._secondVertex.tag())
+
+
         def opposite(self, v):
             """
             Return the vertex that is opposite v on this edge
@@ -75,6 +79,9 @@ class Graph:
 
         def __str__(self):
             return '({0},{1})'.format(self._firstVertex,self._secondVertex)
+
+        def __eq__(self, other):
+            return True if (self._firstVertex == other._firstVertex and self._secondVertex == other._secondVertex) else False
 
     #------------------------- Graph methods -------------------------
     
@@ -163,6 +170,12 @@ class Graph:
         self._validate_vertex(v)
         adj = self._vertices
         return len(adj[v])
+    def max_degree(self):
+        degrees = [] 
+        for v in self._vertices.keys():
+            degrees.append(self.degree(v))
+        return max(degrees)
+
 
     def adjacents(self, v):
         """
@@ -186,6 +199,7 @@ class Graph:
         v = self.Vertex(t)
         self._vertices[v] = {}
         return v
+
     def add_vertex(self,v):
         self._vertices[v] = {}
 
