@@ -10,23 +10,23 @@ class Graph:
         """
         vertex structure for a graph
         """
-        __slots__ = '_tag' , '_weight'
+        __slots__ = '_tag' , '_degree'
 
         def __init__(self, t):
             self._tag = t
-            self._weight = 0
+            self._degree = 0
 
         def tag(self):
             return self._tag
 
-        def weight(self):
-            return self._weight
+        def degree(self):
+            return self._degree
 
-        def incWeight(self):
-            self._weight = self._weight + 1
+        def incDegree(self):
+            self._degree = self._degree + 1
 
-        def decWeight(self):
-            self._weight = self._weight - 1
+        def decDegree(self):
+            self._degree = self._degree - 1
 
         def __str__(self):
             return str(self._tag)
@@ -179,6 +179,16 @@ class Graph:
             raise ValueError('u and v are already adjacent')
         e = self.Edge(u, v)
         self._vertices[u][v] = e
+
+        #inc these vertices degree
+        int break_cond = 0
+        for w in self._vertices.keys()
+            if ( (w==u) or (w==v) ):
+                w.incDegree()
+                break_cond++
+            if break_cond = 2 :
+                break
+
 
     def _print_edge(self,e):
         return '{0}-{1}'.format(e._firstVertex,e._secondVertex)
