@@ -11,6 +11,7 @@ parser.add_argument('-p', '--subComplexesItemsNumber', help="number Of Sub-Compl
 parser.add_argument('-k', '--maxNumberOfEdges', help="maxNumberOfEdges -k [1...*]", type=int, default=2)
 parser.add_argument('-d', '--delta', help="Max degree of the resulting graph", type=int, default=10)
 parser.add_argument('-a', '--algo', help="The algo use for simulation 0-first Algo, 1-second algo", type=int, choices=[0, 1], default=0)
+parser.add_argument('-n', '--execNumber', help="Number of execution -n in [1...*]", type=int, default=1)
 args = parser.parse_args()
 
 def printOptions():
@@ -19,6 +20,7 @@ def printOptions():
 	print("maxNumberOfEdges : ", args.maxNumberOfEdges)
 	print("delta : ", args.delta)
 	print("algo : ", args.algo)
+	print("Number of execution : ", args.execNumber)
 	print()
 
 #create graphe from edge list, this edges are just tuple(char,char)
@@ -124,7 +126,6 @@ def Prim(G):
 '''
 def computeAlgoOne(subComplexes, k, delta, t):
 	win = 0
-	fail = 0
 	
 	for sc in subComplexes.values():
 		edgesInG = []
@@ -144,10 +145,18 @@ def computeAlgoOne(subComplexes, k, delta, t):
 		b= True if (g.max_degree()<delta) else False
 		if (a==True and b==True):
 			win = win +1
-		else:
-			fail = fail +1
 
-	return win / t
+	return win
+
+'''
+	Compute Algo n time and return proportion of positive result
+'''
+def computeAlgoOneXtime(n, subComplexes, k, delta, t):
+	win = 0
+	for i in range(1,n+1):
+		win = win + computeAlgoOne(subComplexes, k, delta, t)
+
+	return win/n
 
 def computeAlgoTwo(subComplexes, k, delta, t):
 	win = 0
@@ -166,6 +175,7 @@ if __name__ == '__main__':
 	k=args.maxNumberOfEdges
 	d=args.delta
 	a=args.algo
+	n=args.execNumber
 	printOptions()
 
 	#program beginning
@@ -180,7 +190,7 @@ if __name__ == '__main__':
 
 	#compute subComplexes, k, delta, t, a
 	if(a==0):
-		res = computeAlgoOne(subComplexes,k,d,t)
+		res = computeAlgoOneXtime(n,subComplexes,k,d,t)
 		print(res)
 	elif(a==1):
 		print("second algo is not ready yet")
