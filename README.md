@@ -1,7 +1,7 @@
 # Algorithms-for-connectivity-inference
 Algorithmic and complexity project : Semester 7 - Polytech'Nice Sophia
 
-#Possible options for execution :
+# Possible options for execution :
 
 -t' : numberOfSubComplexes -t in [1...*]",type=int, default=20
 
