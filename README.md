@@ -20,5 +20,5 @@ Algorithmic and complexity project : Semester 7 - Polytech'Nice Sophia
 The propotion of positive solution for the given args !
 
 # Warning :
-Only one algo has been implemented :)
+Only one algo has been implemented (the first algo which is based on Spanning Tree)
 
